@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { signupService } from '../services/auth.service';
+import {loginService, signupService} from '../services/auth.service';
 
 export const signup = async (req: Request, res: Response) => {
     const { name, email, password } = req.body;
@@ -11,3 +11,20 @@ export const signup = async (req: Request, res: Response) => {
         data: user,
     });
 };
+
+export const login = async (req: Request, res: Response) => {
+    const { email, password } = req.body;
+
+    const user = await loginService(email, password);
+
+    if (!user) {
+        return res.json({
+            message: 'invalid email or password',
+        });
+    }
+
+    res.json({
+        message: 'login success',
+        data: user,
+    });
+}
