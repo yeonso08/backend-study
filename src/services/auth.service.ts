@@ -5,16 +5,18 @@ import jwt from 'jsonwebtoken';
 export const signupService = async (
     name: string,
     email: string,
-    password: string
+    password: string,
+    birth_date?: string,
+    gender?: string
 ) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const result = await pool.query(
         `
-      INSERT INTO users (name, email, password)
-      VALUES ($1, $2, $3)
-      RETURNING id, name, email, created_at
+      INSERT INTO users (name, email, password, birth_date, gender)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING id, name, email, birth_date, gender, created_at
     `,
-        [name, email, hashedPassword]
+        [name, email, hashedPassword, birth_date ?? null, gender ?? null]
     );
 
     return result.rows[0];
