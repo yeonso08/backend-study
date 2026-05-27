@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {getPostById, createPost, getPostsList, updatePost, findPostById} from "../services/post.service";
+import {getPostById, createPost, getPostsList, updatePost, findPostById, deletePost} from "../services/post.service";
 
 export const getPosts = async (req: Request, res: Response) => {
     const limit = Number(req.query.limit) || 20;
@@ -66,3 +66,27 @@ export const updatePostHandler = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'internal server error' });
     }
 };
+
+export const deletePostHandler = async (req: Request, res: Response) => {
+    const { id } = req.params as { id: string };
+
+    try {
+        const rowCount = await deletePost(id, req.user!.userId);
+
+        if (!rowCount) {
+            const exists = await findPostById(id);
+            if (!exists) {
+                return res.status(404).json({ message: 'post not found' });
+            }
+            return res.status(403).json({ message: 'forbidden' });
+        }
+
+        res.status(204).send();
+    } catch (err: any) {
+        console.error(err);
+        if (err.code === '22P02') {
+            return res.status(400).json({ message: 'invalid id' });
+        }
+        res.status(500).json({ message: 'internal server error' });
+    }
+}

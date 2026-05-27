@@ -58,3 +58,12 @@ export const updatePost = async (userId: string, payload: any, id: string) => {
 
     return result.rows[0];
 }
+
+export const deletePost = async (id: string, userId: string) => {
+    const result = await pool.query(
+        `DELETE FROM posts WHERE id = $1 AND user_id = $2`,
+        [id, userId]
+    );
+
+    return result.rowCount;
+}
