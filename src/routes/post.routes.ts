@@ -1,6 +1,12 @@
 import express from "express";
 import {authMiddleware} from "../middlewares/auth.middleware";
-import {getPost, createPostHandler, getPosts, updatePostHandler} from "../controllers/post.controller";
+import {
+    getPost,
+    createPostHandler,
+    getPosts,
+    updatePostHandler,
+    deletePostHandler
+} from "../controllers/post.controller";
 import {z} from "zod";
 import {validate} from "../middlewares/validate";
 
@@ -22,5 +28,6 @@ router.get('/', authMiddleware, getPosts);
 router.get('/:id', authMiddleware, getPost);
 router.post('/', authMiddleware, validate(writeSchema), createPostHandler)
 router.patch('/:id', authMiddleware, validate(updateSchema), updatePostHandler)
+router.delete('/:id', authMiddleware,  deletePostHandler)
 
 export default router;
