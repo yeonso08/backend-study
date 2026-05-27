@@ -1,6 +1,6 @@
 import express from "express";
 import {authMiddleware} from "../middlewares/auth.middleware";
-import {getPost, createPostHandler, getPosts} from "../controllers/post.controller";
+import {getPost, createPostHandler, getPosts, updatePostHandler} from "../controllers/post.controller";
 import {z} from "zod";
 import {validate} from "../middlewares/validate";
 
@@ -9,10 +9,18 @@ const writeSchema = z.object({
     content: z.string().min(1).max(5000),
 })
 
+const updateSchema = z.object({
+    title: z.string().min(1).max(100).optional(),
+    content: z.string().min(1).max(5000).optional(),
+}).refine(data => data.title !== undefined || data.content !== undefined, {
+    message: 'title or content is required',
+})
+
 const router = express.Router();
 
 router.get('/', authMiddleware, getPosts);
 router.get('/:id', authMiddleware, getPost);
 router.post('/', authMiddleware, validate(writeSchema), createPostHandler)
+router.patch('/:id', authMiddleware, validate(updateSchema), updatePostHandler)
 
 export default router;

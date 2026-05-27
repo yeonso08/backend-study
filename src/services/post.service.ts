@@ -34,3 +34,27 @@ export const createPost = async (userId: string, payload: any) => {
 
     return result.rows[0];
 }
+
+export const findPostById = async (id: string) => {
+    const result = await pool.query(
+        `SELECT id FROM posts WHERE id = $1`, [id]
+    );
+
+    return result.rows[0];
+}
+
+export const updatePost = async (userId: string, payload: any, id: string) => {
+    const { title, content } = payload;
+
+    const result = await pool.query(
+        `
+        UPDATE posts
+        SET title = COALESCE($1, title), content = COALESCE($2, content), updated_at = NOW()
+        WHERE id = $3 AND user_id = $4
+        RETURNING id, title, content, user_id, created_at, view_count, updated_at
+        `,
+        [title ?? null, content ?? null, id, userId]
+    );
+
+    return result.rows[0];
+}
