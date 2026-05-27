@@ -1,5 +1,16 @@
 import {pool} from "../db/pool";
 
+export const getPostsList = async (limit: number, offset: number) => {
+    const result = await pool.query(
+        `SELECT title, view_count, created_at, id FROM posts
+         ORDER BY created_at DESC
+         LIMIT $1 OFFSET $2`,
+        [limit, offset]
+    );
+
+    return result.rows;
+}
+
 export const getPostById = async (id: string) => {
     const result = await pool.query(
         `UPDATE posts SET view_count = view_count + 1 WHERE id = $1
