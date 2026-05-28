@@ -1,5 +1,5 @@
 import {Request, Response} from 'express';
-import {createComment, findComments, updateComment, findCommentById} from "../services/comment.service";
+import {createComment, findComments, updateComment, findCommentById, deleteComment} from "../services/comment.service";
 
 export const getCommentsHandler = async (req: Request, res: Response) => {
     const { postId } = req.params as { postId: string };
@@ -49,6 +49,29 @@ export const updateCommentHandler = async (req: Request, res: Response) => {
         }
 
         return res.status(200).json({ data: comment });
+    } catch (err: any) {
+        console.error(err);
+        if (err.code === '22P02') {
+            return res.status(400).json({ message: 'invalid id' });
+        }
+        res.status(500).json({ message: 'internal server error' });
+    }
+}
+
+export const deleteCommentHandler = async (req: Request, res: Response) => {
+    const { commentId } = req.params as { commentId: string };
+    const userId = req.user!.userId;
+
+    try {
+        const rowCount = await deleteComment(commentId, userId);
+        if(!rowCount) {
+            const exists = await findCommentById(commentId);
+            if (!exists) {
+                return res.status(404).json({ message: 'comment not found' });
+            }
+            return res.status(403).json({ message: 'forbidden' });
+        }
+        return res.status(204).send();
     } catch (err: any) {
         console.error(err);
         if (err.code === '22P02') {

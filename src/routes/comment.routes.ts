@@ -1,6 +1,11 @@
 import express from "express";
 import {authMiddleware} from "../middlewares/auth.middleware";
-import {getCommentsHandler, createCommentHandler, updateCommentHandler} from "../controllers/comment.controller";
+import {
+    getCommentsHandler,
+    createCommentHandler,
+    updateCommentHandler,
+    deleteCommentHandler
+} from "../controllers/comment.controller";
 import {z} from "zod";
 import {validate} from "../middlewares/validate";
 
@@ -13,5 +18,6 @@ const router = express.Router({ mergeParams: true });
 router.get('/', getCommentsHandler)
 router.post('/', authMiddleware, validate(commentSchema), createCommentHandler)
 router.patch('/:commentId', authMiddleware, validate(commentSchema), updateCommentHandler)
+router.delete('/:commentId', authMiddleware, deleteCommentHandler)
 
 export default router;

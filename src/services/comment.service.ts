@@ -45,3 +45,11 @@ export const updateComment = async (userId: string, id: string, content: string)
 
     return result.rows[0];
 }
+
+export const deleteComment = async (id: string, userId: string) => {
+    const result = await pool.query(
+        `DELETE FROM comments WHERE id = $1 AND user_id = $2`,
+        [id, userId]
+    )
+    return result.rowCount;
+}
