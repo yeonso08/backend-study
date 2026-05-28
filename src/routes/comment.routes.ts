@@ -1,6 +1,6 @@
 import express from "express";
 import {authMiddleware} from "../middlewares/auth.middleware";
-import {getComments, postComment} from "../controllers/comment.controller";
+import {getCommentsHandler, createCommentHandler} from "../controllers/comment.controller";
 import {z} from "zod";
 import {validate} from "../middlewares/validate";
 
@@ -10,7 +10,7 @@ const commentSchema = z.object({
 
 const router = express.Router({ mergeParams: true });
 
-router.get('/', getComments)
-router.post('/', authMiddleware, validate(commentSchema), postComment)
+router.get('/', getCommentsHandler)
+router.post('/', authMiddleware, validate(commentSchema), createCommentHandler)
 
 export default router;

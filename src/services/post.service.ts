@@ -1,6 +1,6 @@
 import {pool} from "../db/pool";
 
-export const getPostsList = async (limit: number, offset: number) => {
+export const findPosts = async (limit: number, offset: number) => {
     const result = await pool.query(
         `SELECT title, view_count, created_at, id FROM posts
          ORDER BY created_at DESC

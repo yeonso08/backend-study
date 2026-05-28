@@ -1,13 +1,13 @@
 import {Request, Response} from "express";
-import {getPostById, createPost, getPostsList, updatePost, findPostById, deletePost} from "../services/post.service";
+import {getPostById, createPost, findPosts, updatePost, findPostById, deletePost} from "../services/post.service";
 
-export const getPosts = async (req: Request, res: Response) => {
+export const getPostsHandler = async (req: Request, res: Response) => {
     const limit = Number(req.query.limit) || 20;
     const page = Number(req.query.page) || 1;
     const offset = (page - 1) * limit;
 
     try {
-        const posts = await getPostsList(limit, offset);
+        const posts = await findPosts(limit, offset);
         res.status(200).json({ data: posts });
     } catch (err) {
         console.error(err);
@@ -15,7 +15,7 @@ export const getPosts = async (req: Request, res: Response) => {
     }
 }
 
-export const getPost = async (req: Request, res: Response) => {
+export const getPostHandler = async (req: Request, res: Response) => {
     const { id } = req.params as { id: string };
 
     try {

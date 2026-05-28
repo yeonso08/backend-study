@@ -1,7 +1,7 @@
 import {Request, Response} from 'express';
 import {createComment, findComments} from "../services/comment.service";
 
-export const getComments = async (req: Request, res: Response) => {
+export const getCommentsHandler = async (req: Request, res: Response) => {
     const { postId } = req.params as { postId: string };
     const limit = Number(req.query.limit) || 20;
     const page = Number(req.query.page) || 1;
@@ -19,7 +19,7 @@ export const getComments = async (req: Request, res: Response) => {
     }
 }
 
-export const postComment = async (req: Request, res: Response) => {
+export const createCommentHandler = async (req: Request, res: Response) => {
     const { postId } = req.params as { postId: string };
     const { content } = req.body;
 

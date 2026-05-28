@@ -1,9 +1,9 @@
 import express from "express";
 import {authMiddleware} from "../middlewares/auth.middleware";
 import {
-    getPost,
+    getPostHandler,
     createPostHandler,
-    getPosts,
+    getPostsHandler,
     updatePostHandler,
     deletePostHandler
 } from "../controllers/post.controller";
@@ -24,10 +24,10 @@ const updateSchema = z.object({
 
 const router = express.Router();
 
-router.get('/', authMiddleware, getPosts);
-router.get('/:id', authMiddleware, getPost);
+router.get('/', authMiddleware, getPostsHandler);
+router.get('/:id', authMiddleware, getPostHandler);
 router.post('/', authMiddleware, validate(writeSchema), createPostHandler)
 router.patch('/:id', authMiddleware, validate(updateSchema), updatePostHandler)
-router.delete('/:id', authMiddleware,  deletePostHandler)
+router.delete('/:id', authMiddleware, deletePostHandler)
 
 export default router;

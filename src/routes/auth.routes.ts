@@ -1,6 +1,6 @@
 import express from 'express';
 import { z } from 'zod';
-import {login, signup} from "../controllers/auth.controller";
+import {loginHandler, signupHandler} from "../controllers/auth.controller";
 import {authMiddleware} from "../middlewares/auth.middleware";
 import {validate} from "../middlewares/validate";
 
@@ -14,8 +14,8 @@ const signupSchema = z.object({
 
 const router = express.Router();
 
-router.post('/signup', validate(signupSchema), signup);
-router.post('/login', login);
+router.post('/signup', validate(signupSchema), signupHandler);
+router.post('/login', loginHandler);
 router.get('/me', authMiddleware, (req, res) => {
     res.json({
         user: req.user,
